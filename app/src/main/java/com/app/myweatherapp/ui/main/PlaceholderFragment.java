@@ -1,6 +1,5 @@
 package com.app.myweatherapp.ui.main;
 
-import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,16 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.myweatherapp.R;
+import com.app.myweatherapp.data.Datasource;
 import com.app.myweatherapp.databinding.FragmentMainBinding;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,6 +40,7 @@ public class PlaceholderFragment extends Fragment {
 //    View root;     // 我的作法:把 root 宣告在這裡，在 onPostExecute() 裡把 tvTemp 找到並使用
     TextView tvTemp, tvMax, tvMin, tvWindDer, tvWindSpeed, tvStatus; // 老師的作法：在 onCreateView() 裡找到 tvTemp，在 onPostExecute() 裡使用
     ImageView ivWeather;
+    Datasource datasource = new Datasource();
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -134,26 +130,26 @@ public class PlaceholderFragment extends Fragment {
     }
 
     //    開始-----------------------------------------------------------------------------------------
-    private String fetchWeatherData() {
-        try {
-            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Taipei,tw&appid=b42d38f45579cbdde04eee8d8120282a");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            InputStream is = conn.getInputStream();
-            byte[] cache = new byte[1024];
-            is.read(cache);
-//            JSONObject jsonObject = new JSONObject(new String(cache));
-            return new String(cache);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "failed!!";
-        }
-    }
+//    private String fetchWeatherData() {
+//        try {
+//            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Taipei,tw&appid=b42d38f45579cbdde04eee8d8120282a");
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            InputStream is = conn.getInputStream();
+//            byte[] cache = new byte[1024];
+//            is.read(cache);
+////            JSONObject jsonObject = new JSONObject(new String(cache));
+//            return new String(cache);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return "failed!!";
+//        }
+//    }
 
     private class MyAsynTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... strings) {
-            return fetchWeatherData();
+            return datasource.fetchWeatherData();
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -166,60 +162,60 @@ public class PlaceholderFragment extends Fragment {
 //            calendar.setTime();
 //            Log.v("jena", calendar.get(calendar.D));
 
-//            try {
-//                JSONObject jObj = new JSONObject(result);
-//
-//                JSONObject jObjCoord = jObj.getJSONObject("coord");
-//                Double lon = jObjCoord.getDouble("lon");
-//                Double lat = jObjCoord.getDouble("lat");
-//                Log.v("jena", "lon=" + lon + ", lat=" + lat);
-//
-//                JSONObject jObjWeather = jObj.getJSONArray("weather").getJSONObject(0);
-//                String mainWeather = jObjWeather.getString("main");
-//                String descWeather = jObjWeather.getString("description");
-//                Log.v("jena", "mainWeather=" + mainWeather + ", descWeather=" + descWeather);
-//
-//                JSONObject jObjMain = jObj.getJSONObject("main");
-//                Double temp = jObjMain.getDouble("temp")-273.15;
-//                Double minTemp = jObjMain.getDouble("temp_min")-273.15;
-//                Double maxTemp = jObjMain.getDouble("temp_max")-273.15;
-//                Log.v("jena", "temp=" + temp + ", minTemp=" + minTemp + ", maxTemp=" + maxTemp);
-//
-//                JSONObject jObjWind = jObj.getJSONObject("wind");
-//                Double windSpeed = jObjWind.getDouble("speed");
-//                int windDeg = jObjWind.getInt("deg");
-//                Log.v("jena", "windSpeed=" + windSpeed + ", windDeg=" + windDeg);
-//
-//                tvMax.setText(String.format("Max: %2.0f℃",maxTemp));
-//                tvMin.setText(String.format("Min: %2.0f℃",minTemp));
-//                tvTemp.setText(String.format("%2.0f°",temp));
-//                tvWindSpeed.setText(String.format("Wind Speed: %2.0fkm/h",windSpeed));
-//                tvStatus.setText(descWeather);
-//                switch (mainWeather){
-//                    case "Clouds" :
-//                        ivWeather.setImageResource(R.drawable.partly_cloudy_day);
-//                        break;
-//                    case "Rain":
-//                        ivWeather.setImageResource(R.drawable.rain_day);
-//                        break;
-//                    case "Clear":
-//                        ivWeather.setImageResource(R.drawable.clear_day);
-//                        break;
-//                }
-//                if(windDeg>=45&&windDeg<135){
-//                    tvWindDer.setText("Wind Direct: East");
-//                }else if (windDeg>=135&&windDeg<225){
-//                    tvWindDer.setText("Wind Direct: South");
-//                }else if (windDeg>=225&&windDeg<315){
-//                    tvWindDer.setText("Wind Direct: West");
-//                }else{
-//                    tvWindDer.setText("Wind Direct: North");
-//                }
-//
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                JSONObject jObj = new JSONObject(result);
+
+                JSONObject jObjCoord = jObj.getJSONObject("coord");
+                Double lon = jObjCoord.getDouble("lon");
+                Double lat = jObjCoord.getDouble("lat");
+                Log.v("jena", "lon=" + lon + ", lat=" + lat);
+
+                JSONObject jObjWeather = jObj.getJSONArray("weather").getJSONObject(0);
+                String mainWeather = jObjWeather.getString("main");
+                String descWeather = jObjWeather.getString("description");
+                Log.v("jena", "mainWeather=" + mainWeather + ", descWeather=" + descWeather);
+
+                JSONObject jObjMain = jObj.getJSONObject("main");
+                Double temp = jObjMain.getDouble("temp")-273.15;
+                Double minTemp = jObjMain.getDouble("temp_min")-273.15;
+                Double maxTemp = jObjMain.getDouble("temp_max")-273.15;
+                Log.v("jena", "temp=" + temp + ", minTemp=" + minTemp + ", maxTemp=" + maxTemp);
+
+                JSONObject jObjWind = jObj.getJSONObject("wind");
+                Double windSpeed = jObjWind.getDouble("speed");
+                int windDeg = jObjWind.getInt("deg");
+                Log.v("jena", "windSpeed=" + windSpeed + ", windDeg=" + windDeg);
+
+                tvMax.setText(String.format("Max: %2.0f℃",maxTemp));
+                tvMin.setText(String.format("Min: %2.0f℃",minTemp));
+                tvTemp.setText(String.format("%2.0f°",temp));
+                tvWindSpeed.setText(String.format("Wind Speed: %2.0fkm/h",windSpeed));
+                tvStatus.setText(descWeather);
+                switch (mainWeather){
+                    case "Clouds" :
+                        ivWeather.setImageResource(R.drawable.partly_cloudy_day);
+                        break;
+                    case "Rain":
+                        ivWeather.setImageResource(R.drawable.rain_day);
+                        break;
+                    case "Clear":
+                        ivWeather.setImageResource(R.drawable.clear_day);
+                        break;
+                }
+                if(windDeg>=45&&windDeg<135){
+                    tvWindDer.setText("Wind Direct: East");
+                }else if (windDeg>=135&&windDeg<225){
+                    tvWindDer.setText("Wind Direct: South");
+                }else if (windDeg>=225&&windDeg<315){
+                    tvWindDer.setText("Wind Direct: West");
+                }else{
+                    tvWindDer.setText("Wind Direct: North");
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
