@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,11 @@ import com.app.myweatherapp.databinding.FragmentMainBinding;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,13 +77,13 @@ public class PlaceholderFragment extends Fragment {
         binding = FragmentMainBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         // 下面這些都用 binding.xxx也可以
-//        tvTemp = root.findViewById(R.id.tvTemp);
-//        ivWeather = root.findViewById(R.id.ivWeather);
-//        tvMax = root.findViewById(R.id.tvMaxTemp);
-//        tvMin = root.findViewById(R.id.tvMinTemp);
-//        tvWindDer = root.findViewById(R.id.tvWindDirect);
-//        tvWindSpeed = root.findViewById(R.id.tvWindSpeed);
-//        tvStatus = root.findViewById(R.id.tvStatus);
+        tvTemp = root.findViewById(R.id.tvTemp);
+        ivWeather = root.findViewById(R.id.ivWeather);
+        tvMax = root.findViewById(R.id.tvMaxTemp);
+        tvMin = root.findViewById(R.id.tvMinTemp);
+        tvWindDer = root.findViewById(R.id.tvWindDirect);
+        tvWindSpeed = root.findViewById(R.id.tvWindSpeed);
+        tvStatus = root.findViewById(R.id.tvStatus);
 
 //        開始-------------------------------------------------------------------
 //          RecyclerView recyclerView = binding.recyclerView; // 我的第一頁沒 recyclerView 啦
@@ -130,26 +136,27 @@ public class PlaceholderFragment extends Fragment {
     }
 
     //    開始-----------------------------------------------------------------------------------------
-//    private String fetchWeatherData() {
-//        try {
-//            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Taipei,tw&appid=b42d38f45579cbdde04eee8d8120282a");
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            InputStream is = conn.getInputStream();
-//            byte[] cache = new byte[1024];
-//            is.read(cache);
-////            JSONObject jsonObject = new JSONObject(new String(cache));
-//            return new String(cache);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "failed!!";
-//        }
-//    }
+    private String fetchWeatherData() {
+        try {
+            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Taipei,tw&appid=b42d38f45579cbdde04eee8d8120282a");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            InputStream is = conn.getInputStream();
+            byte[] cache = new byte[1024];
+            is.read(cache);
+//            JSONObject jsonObject = new JSONObject(new String(cache));
+            return new String(cache);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "failed!!";
+        }
+    }
 
     private class MyAsynTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... strings) {
-            return datasource.fetchWeatherData();
+//            return datasource.fetchWeatherData();
+            return fetchWeatherData();
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -158,9 +165,8 @@ public class PlaceholderFragment extends Fragment {
             super.onPostExecute(result);
             Log.v("jena", result);
 
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime();
-//            Log.v("jena", calendar.get(calendar.D));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd");
+            Log.v("jena", "");
 
             try {
                 JSONObject jObj = new JSONObject(result);
