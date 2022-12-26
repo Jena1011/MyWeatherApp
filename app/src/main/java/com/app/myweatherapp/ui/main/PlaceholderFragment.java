@@ -3,6 +3,7 @@ package com.app.myweatherapp.ui.main;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,33 +166,43 @@ public class PlaceholderFragment extends Fragment {
             super.onPostExecute(result);
             Log.v("jena", result);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd");
-            Log.v("jena", "");
+
 
             try {
                 JSONObject jObj = new JSONObject(result);
 
+                // 取得當前時間 (格式化)
+                long curTime = System.currentTimeMillis();
+                String curDateStr = DateFormat.format("EEE. yyyy/MM/dd",curTime).toString();
+                String curTimeStr = DateFormat.format("hh:mm",curTime).toString();
+                Log.v("jena", "curDateStr =" + curDateStr + ", curTimeStr =" + curTimeStr);
+
+                // 取得位置資訊
                 JSONObject jObjCoord = jObj.getJSONObject("coord");
                 Double lon = jObjCoord.getDouble("lon");
                 Double lat = jObjCoord.getDouble("lat");
                 Log.v("jena", "lon=" + lon + ", lat=" + lat);
 
+                // 取得天氣資訊
                 JSONObject jObjWeather = jObj.getJSONArray("weather").getJSONObject(0);
                 String mainWeather = jObjWeather.getString("main");
                 String descWeather = jObjWeather.getString("description");
                 Log.v("jena", "mainWeather=" + mainWeather + ", descWeather=" + descWeather);
 
+                // 取得溫度資訊
                 JSONObject jObjMain = jObj.getJSONObject("main");
                 Double temp = jObjMain.getDouble("temp")-273.15;
                 Double minTemp = jObjMain.getDouble("temp_min")-273.15;
                 Double maxTemp = jObjMain.getDouble("temp_max")-273.15;
                 Log.v("jena", "temp=" + temp + ", minTemp=" + minTemp + ", maxTemp=" + maxTemp);
 
+                // 取得風速風向資訊
                 JSONObject jObjWind = jObj.getJSONObject("wind");
                 Double windSpeed = jObjWind.getDouble("speed");
                 int windDeg = jObjWind.getInt("deg");
                 Log.v("jena", "windSpeed=" + windSpeed + ", windDeg=" + windDeg);
 
+                // 顯示資訊
                 tvMax.setText(String.format("Max: %2.0f℃",maxTemp));
                 tvMin.setText(String.format("Min: %2.0f℃",minTemp));
                 tvTemp.setText(String.format("%2.0f°",temp));
