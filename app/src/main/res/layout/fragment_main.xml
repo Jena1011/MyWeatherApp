@@ -10,22 +10,6 @@
     android:padding="10dp"
     tools:context=".ui.main.PlaceholderFragment">
 
-<!--    <TextView-->
-<!--        android:id="@+id/section_label"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="32dp"-->
-<!--        android:layout_marginLeft="28dp"-->
-<!--        android:layout_marginTop="228dp"-->
-<!--        android:layout_marginEnd="180dp"-->
-<!--        android:textSize="16sp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/constraintLayout"-->
-<!--        app:layout_constraintVertical_bias="0.448"-->
-<!--        tools:layout_constraintLeft_creator="1"-->
-<!--        tools:layout_constraintTop_creator="1" />-->
-
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"

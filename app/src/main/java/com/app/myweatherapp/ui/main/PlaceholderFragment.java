@@ -45,7 +45,7 @@ public class PlaceholderFragment extends Fragment {
     private PageViewModel pageViewModel;
     private FragmentMainBinding binding;
 //    View root;     // 我的作法:把 root 宣告在這裡，在 onPostExecute() 裡把 tvTemp 找到並使用
-    TextView tvTemp, tvMax, tvMin, tvWindDer, tvWindSpeed, tvStatus; // 老師的作法：在 onCreateView() 裡找到 tvTemp，在 onPostExecute() 裡使用
+    TextView tvDate, tvTime, tvTemp, tvMax, tvMin, tvWindDer, tvWindSpeed, tvStatus; // 老師的作法：在 onCreateView() 裡找到 tvTemp，在 onPostExecute() 裡使用
     ImageView ivWeather;
     Datasource datasource = new Datasource();
 
@@ -78,6 +78,8 @@ public class PlaceholderFragment extends Fragment {
         binding = FragmentMainBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         // 下面這些都用 binding.xxx也可以
+        tvDate = root.findViewById(R.id.tvDate);
+        tvTime = root.findViewById(R.id.tvTime);
         tvTemp = root.findViewById(R.id.tvTemp);
         ivWeather = root.findViewById(R.id.ivWeather);
         tvMax = root.findViewById(R.id.tvMaxTemp);
@@ -136,7 +138,7 @@ public class PlaceholderFragment extends Fragment {
         binding = null;
     }
 
-    //    開始-----------------------------------------------------------------------------------------
+    // 建立方法：連結api，取得json格式的天氣資料
     private String fetchWeatherData() {
         try {
             URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=Taipei,tw&appid=b42d38f45579cbdde04eee8d8120282a");
@@ -152,6 +154,7 @@ public class PlaceholderFragment extends Fragment {
         }
     }
 
+    // 建立類別：背景同步處理任務
     private class MyAsynTask extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -165,8 +168,6 @@ public class PlaceholderFragment extends Fragment {
         protected void onPostExecute(String result) { // result 為 doInBackground return 回來的東西
             super.onPostExecute(result);
             Log.v("jena", result);
-
-
 
             try {
                 JSONObject jObj = new JSONObject(result);
@@ -203,6 +204,8 @@ public class PlaceholderFragment extends Fragment {
                 Log.v("jena", "windSpeed=" + windSpeed + ", windDeg=" + windDeg);
 
                 // 顯示資訊
+                tvDate.setText(curDateStr);
+                tvTime.setText(curTimeStr);
                 tvMax.setText(String.format("Max: %2.0f℃",maxTemp));
                 tvMin.setText(String.format("Min: %2.0f℃",minTemp));
                 tvTemp.setText(String.format("%2.0f°",temp));
